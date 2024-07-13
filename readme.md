@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/e8663ba5-40b6-406b-bac6-7ef5fb5608c6)# HONO
+# HONO
 
 - fantastic library to work on backend 
 - work good with serverless backend and with server backend
