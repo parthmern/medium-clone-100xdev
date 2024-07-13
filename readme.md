@@ -38,3 +38,108 @@
 - click on GENERATE API KEY
 
 - done you are getting connection pool url which is here `prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiNmMyNmNiNGMtNDQ4OS00NDNjLWE2ZTQtMzEwMWNmODRmZjEyIiwidGVuYW50X2lkIjoiNzZhNGQ5YWJkMGRmZjY2MjRiZjllNWMxNWNjMjgxZjNhZDU5YWM2NmNlNGY3NjBjNjRlZjkwMDU0YWRiNGU1NSIsImludGVybmFsX3NlY3JldCI6ImFhYzY4ZGE0LTNkY2QtNDM1OS1hMTM5LWE5NDMxY2Q2M2ZkYSJ9.Ts2K4DvWb-J_lKeNDrodB6N0ZmqRfz7_CoGyo6Ucbng`
+
+
+## How to setup ?
+
+- `npm i prisma
+npx prisma init`
+
+- then go to .env file where replace the DATABASE_URL with `actual db url` (make sure do not do with connection pooling url) because prima client need to connect with actual db url and prisma migration commands need to connect with actual db url to generate migrations.
+
+- so actually here this connection pooling url is going to be used by cloudflare workers so go to the file named `wrangler.toml` in which u can change your ENV variables and where 
+```
+[vars]
+DATABASE_URL = "<connection pooling prisma url>"
+```
+- is going to be the connection pooling url
+
+# DB schema explained
+
+```
+-- IN PRISMA
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(uuid())
+  email    String   @unique
+  name     String?
+  password String
+  posts    Post[]
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+
+---------------------------------------------------------------------------
+-- IN SQL
+
+CREATE TABLE Users (
+    userId INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE Posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description VARCHAR(255),
+    userId INT,
+    FOREIGN KEY (userId) REFERENCES Users(userId)
+);
+
+
+----------------------------------------------------------------------------
+-- IN MONGODB
+
+const userSchema = new Schema({
+  userId: {
+    type: Number,
+    unique: true,
+    required: true,
+    autoIncrement: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+});
+
+const postSchema = new Schema({
+  id: {
+    type: Number,
+    unique: true,
+    required: true,
+    autoIncrement: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  userId: {
+    type: Number,
+    ref: 'User'
+  }
+});
+
+-- but here if we change relationship
+-- and create posts[] array in user's schema where we can store all the post's ids related to that user
+
+```
