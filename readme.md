@@ -17,3 +17,8 @@
 
 - it is not like same code is going to work everywhere but there are only few changes in code that u can make to use the same code on above every platform
 
+## What is connection pulling ?
+
+- in serverless backend, different types of server/ pc is available at different places so assume that multiple PC is going to make connection with DB so there are multiple connections exists with DB.
+
+- here, one median entity which is called as "connection pool" helps all the pc to connect with DB so there is only one DB connection.
