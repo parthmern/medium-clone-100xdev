@@ -56,6 +56,9 @@ DATABASE_URL = "<connection pooling prisma url>"
 
 # DB schema explained
 
+![image](https://github.com/user-attachments/assets/bbc2175f-0188-486b-ad7e-a5bbe25e0b60)
+
+
 ```
 -- IN PRISMA
 
