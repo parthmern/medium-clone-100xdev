@@ -146,3 +146,6 @@ const postSchema = new Schema({
 -- and create posts[] array in user's schema where we can store all the post's ids related to that user
 
 ```
+# PRISMA RELATIONSHIP EXPLAINED
+
+![image](https://github.com/user-attachments/assets/2d2a1fef-3320-4d18-b03f-4eba491b4ce0)
