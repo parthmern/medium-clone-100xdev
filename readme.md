@@ -88,6 +88,9 @@ model Post {
   authorId  String
 }
 
+-- here posts[] enforce the relation ship  which is one array that stores the ids of post 
+-- 
+
 ---------------------------------------------------------------------------
 -- IN SQL
 
