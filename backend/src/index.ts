@@ -1,6 +1,15 @@
 import { Hono } from 'hono';
+import { PrismaClient } from '@prisma/client/edge'
+import { withAccelerate } from '@prisma/extension-accelerate'
+
 
 // Create the main Hono app
+// const app = new Hono<{
+// 	Bindings: {
+// 		DATABASE_URL: string
+// 	}
+// }>();
+
 const app = new Hono();
 
 app.get('/', (c) => {
@@ -10,6 +19,16 @@ app.get('/', (c) => {
 })
 
 app.post('/api/v1/signup', (c) => {
+
+	// in hono how to get ENV vars
+	// @ts-ignore
+	const DATABASE_URL = c.env.DATABASE_URL ;
+
+	// this is IMP acceleatate needed for connection pooling in serverless backend
+	const prisma = new PrismaClient({
+		datasourceUrl: DATABASE_URL,
+	}).$extends(withAccelerate())
+
 	return c.text('signup route')
 })
 
