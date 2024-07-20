@@ -24,6 +24,34 @@ app.get('/', (c) => {
 	return c.text('hello from hono js with cloudflare workers/wrangler')
 })
 
+// middleware
+app.use('/api/v1/blog/*', async (c, next) => {
+
+	// get header
+	const header = c.req.header("authorization") || "";
+	const token = header.split(" ")[1];
+
+	// verify header
+	const response = await verify(token, "secret");
+
+	if(response.id){
+		console.log("jwt verification successful");
+		await next();
+	}
+	else{
+		console.log("jwt verification failed");
+		c.status(401);
+		return c.json(
+			{
+				success : false, 
+				message : "jwt verification failed" 
+			}
+		)
+	}
+
+	
+})
+
 app.post('/api/v1/signup', async (c) => {
 
 	// in hono how to get ENV vars
@@ -33,6 +61,7 @@ app.post('/api/v1/signup', async (c) => {
 	console.log(DATABASE_URL);
 
 	// this is IMP acceleatate needed for connection pooling in serverless backend
+	// Finally, extend your Prisma Client instance with the Accelerate extension to enable Accelerate’s connection pool:
 	const prisma = new PrismaClient({
 		datasourceUrl: DATABASE_URL,
 	}).$extends(withAccelerate())
