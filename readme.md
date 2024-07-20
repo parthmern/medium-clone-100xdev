@@ -2,6 +2,8 @@
 
 - fantastic library to work on backend 
 - work good with serverless backend and with server backend
+- hono is just like expressJs (used with nodeJs) a framework 
+- here hono can be used with Cloudflare Workers, Fastly Compute, Deno, Bun, Vercel, Netlify, AWS Lambda, Lambda@Edge, and Node.js.
 
 <br />
 - hono gives us backend response streaming ( like chatgpt llms takes time to give response, hono allows you to stream the response from backend )
