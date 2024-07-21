@@ -115,3 +115,28 @@ blogRouter.put('/', async(c) => {
 })
 
 
+// can be added PAGINATION
+// offset walu in api url
+blogRouter.get("/bulk", async(c)=>{
+
+    const body = await c.req.json();
+    //@ts-ignore
+    const dbUrl = c.env.DATABASE_URL ;
+    const prisma = new PrismaClient({
+        datasources : dbUrl ,
+    }).$extends(withAccelerate());
+
+    const allBlogs = await prisma.post.findMany();
+
+    c.status(200);
+    return(
+        c.json(
+            {
+                allBlogs
+            }
+        )
+    )
+
+
+
+})
