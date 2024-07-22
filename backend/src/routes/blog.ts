@@ -1,3 +1,4 @@
+import { createPostInput, updatePostInput } from "@parthmern/common-blogapp";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
@@ -57,6 +58,21 @@ blogRouter.post('/', async(c) => {
     }).$extends(withAccelerate());
 
     const userId = c.get("userId");
+
+    const {success} = await createPostInput.safeParse(body);
+
+    if(!success){
+        c.status(411);
+        return(
+            c.json(
+                {
+                    success : success ,
+                    message : "zod validation failed = createPostInput"
+                }
+            )
+        )
+    }
+
 
     const createdBlog = await prisma.post.create(
         {
@@ -165,6 +181,20 @@ blogRouter.put('/', async(c) => {
     const prisma = new PrismaClient({
         datasourceUrl : dbUrl ,
     }).$extends(withAccelerate());
+
+    const {success} = await updatePostInput.safeParse(body);
+
+    if(!success){
+        c.status(411);
+        return(
+            c.json(
+                {
+                    success : success ,
+                    message : "zod validation failed = updatePostInput"
+                }
+            )
+        )
+    }
 
     const updatedBlog = await prisma.post.update(
         {
