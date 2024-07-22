@@ -6,7 +6,7 @@ import { decode, sign, verify } from 'hono/jwt'
 
 export const userRouter = new Hono();
 
-userRouter.post('/api/v1/signup', async (c) => {
+userRouter.post('/signup', async (c) => {
 
 	// in hono how to get ENV vars
 	// @ts-ignore
@@ -53,7 +53,7 @@ userRouter.post('/api/v1/signup', async (c) => {
 	)
 })
 
-userRouter.post('/api/v1/signin', async (c) => {
+userRouter.post('/signin', async (c) => {
 	// @ts-ignore
 	const DATABASE_URL = c.env.DATABASE_URL ;
 
