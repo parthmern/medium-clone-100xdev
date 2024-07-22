@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { decode, sign, verify } from 'hono/jwt'
-
+import {signinInput, signupInput} from "@parthmern/common-blogapp";
 
 export const userRouter = new Hono();
 
@@ -24,10 +24,26 @@ userRouter.post('/signup', async (c) => {
 
 	const body = await c.req.json();
 
+    console.log(body);
+
+    const {success} = await signupInput.safeParse(body);
+
+    if(!success){
+        c.status(411);
+        return(
+            c.json(
+                {
+                    success : success ,
+                    message : "zod validation failed"
+                }
+            )
+        )
+    }
+
 	const createdUser = await prisma.user.create(
 		{
 			data : {
-				email : body.email ,
+				email : body.username ,
 				password : body.password ,
 			}
 		}
@@ -62,9 +78,24 @@ userRouter.post('/signin', async (c) => {
 	}).$extends(withAccelerate());
 
 	const body = await c.req.json();
+
+    const {success} =  await signinInput.safeParse(body);
+
+    if(!success){
+        c.status(411);
+        return(
+            c.json(
+                {
+                    success : success ,
+                    message : "zod validation failed = signinInput"
+                }
+            )
+        )
+    }
+
 	const user = await prisma.user.findUnique({
 		where: {
-			email: body.email,
+			email: body.username,
 			password : body.password,
 		}
 	});
